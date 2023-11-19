@@ -80,19 +80,19 @@ def merge_sort(A, left, right):
         merge_sort(A, mid+1, right) # 분할
         merge(A, left, mid, right) # 합병
 
-
-# 힙정렬
+# 힙정렬 ver1
 def heappush(heap, n):
     heap.append(n)
     i = len(heap) -1 # n이 삽입된 위치
-    while i != 1 and n > heap[i//2]:
-        heap[i] = heap[i//2]
+    while i != 1 and n > heap[i // 2]:
+        heap[i] = heap[i // 2]
         i //= 2
     heap[i] = n
 
 def heappop(heap):
     size = len(heap) - 1
-    if size == 0 : return None # 공백트리
+    if size == 0 :
+        return None # 공백트리
     p = 1; i = 2 # p는 부모인덱스, i는 자식인덱스
     root = heap[1] # 삭제할 노드
     last = heap[size] # 마지막 노드
@@ -116,23 +116,55 @@ def heap_sort(data):
     for i in range(1, len(data) + 1):
         data[-i] = heappop(heap)
 
+# 힙정렬 ver2
+def heapify(arr, n, i):
+    # n = arr의 길이, i = 루트노드 인덱스
+    largest = i
+    l = 2*i # 왼쪽 자식 인덱스
+    r = 2*i + 1 # 오른쪽 자식 인덱스
 
+    # 루트(i)와 두 자식 중 가장 큰 요소 인덱스 구하기
+    if l <= n and arr[i] < arr[l]:
+        largest = l
+    if r <= n and arr[largest] < arr[r]:
+        largest = r
+
+    # 자식노드 처리하기
+    if largest != i :
+        arr[i], arr[largest] = arr[largest], arr[i]
+        heapify(arr, n, largest)
+
+def heapSort(arr):
+    n = len(arr) - 1
+
+    # 앞쪽요소 최대힙화
+    for i in range(n//2, 0 , -1):
+        heapify(arr, n, i)
+
+    # 루트와 마지막요소 교환 후 다시 다운 힙
+    for i in range(n-1, 0, -1):
+        arr[i+1], arr[1] = arr[1], arr[i+1]
+        heapify(arr, i ,1)
+
+# 메뉴
+def print_menu():
+    print("\n*** 여러가지 정렬 프로그램 구현 ***")
+    print("*** ***")
+    print("*** 1. 선택(selection) 정렬 ***")
+    print("*** 2. 삽입(insertion) 정렬 ***")
+    print("*** 3. 버블(bubble) 정렬 ***")
+    print("*** 4. 퀵(quick) 정렬 ***")
+    print("*** 5. 합병(merge) 정렬 ***")
+    print("*** 6. 힙(heap) 정렬 ***")
+    print("*** 7. 종료(quit) ***")
+    print("***********************************", end=" ")
 
 # 메인 함수
 def main():
     original_list = [random.randint(0, 100) for _ in range(25)]
+    print_menu()
 
     while True:
-        print("\n*** 여러가지 정렬 프로그램 구현 ***")
-        print("*** ***")
-        print("*** 1. 선택(selection) 정렬 ***")
-        print("*** 2. 삽입(insertion) 정렬 ***")
-        print("*** 3. 버블(bubble) 정렬 ***")
-        print("*** 4. 퀵(quick) 정렬 ***")
-        print("*** 5. 합병(merge) 정렬 ***")
-        print("*** 6. 힙(heap) 정렬 ***")
-        print("*** 7. 종료(quit) ***")
-        print("***********************************", end=" ")
         num = int(input("번호 입력: "))
 
         if num == 1:
@@ -160,21 +192,34 @@ def main():
             print("\n<퀵 정렬>")
             print("정렬 전:", original_list)
             quick_sort_result = original_list.copy()
-            quick_sort_result = quick_sort(quick_sort_result)
+            quick_sort(quick_sort_result)
             print("정렬 후:", quick_sort_result)
 
         elif num == 5:
             print("\n<합병 정렬>")
             print("정렬 전:", original_list)
             merge_sort_result = original_list.copy()
-            merge_sort_result = merge_sort(merge_sort_result)
+            merge_sort(merge_sort_result)
             print("정렬 후:", merge_sort_result)
 
         elif num == 6:
-            print("\n<힙 정렬>")
+            print("<힙 정렬(1)>")
             print("정렬 전:", original_list)
             heap_sort_result = original_list.copy()
-            heap_sort_result = heap_sort(heap_sort_result)
+            heap_sort(heap_sort_result)
             print("정렬 후:", heap_sort_result)
+            print("")
+            print("<힙 정렬(2)>")
+            print("정렬 전:", original_list)
+            heapSort_result = original_list.copy()
+            heapSort(heapSort_result)
+            print("정렬 후 : ", heapSort_result)
+
+        elif num == 7:
+            exit("\n<종료>")
+
+        else:
+            print("\n<번호 오류>")
+        print("")
 
 main()
